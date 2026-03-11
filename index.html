@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AQUA – Community Water Resource System</title>
+  <meta name="description" content="Monitor, report, and track water issues in your community with real-time alerts and analytics." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- ─── App Shell ─────────────────────────────────────── -->
+<div class="app-shell">
+
+  <!-- ─── SIDEBAR ──────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💧</div>
+      <div class="logo-text">
+        AQUA
+        <span>Water Resource System</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a class="nav-item" href="map.html">
+        <span class="nav-icon">🗺️</span> Live Map
+        <span class="nav-badge">3</span>
+      </a>
+      <a class="nav-item" href="analytics.html">
+        <span class="nav-icon">📊</span> Analytics
+      </a>
+
+      <div class="nav-section-label">Community</div>
+      <a class="nav-item" href="report.html">
+        <span class="nav-icon">📝</span> Report Issue
+      </a>
+      <a class="nav-item" href="report.html">
+        <span class="nav-icon">📋</span> My Reports
+        <span class="nav-badge warn">6</span>
+      </a>
+
+      <div class="nav-section-label">Monitoring</div>
+      <a class="nav-item" href="analytics.html">
+        <span class="nav-icon">🔬</span> Water Quality
+      </a>
+      <a class="nav-item" href="analytics.html">
+        <span class="nav-icon">📡</span> Sensor Network
+        <span class="nav-badge good">Online</span>
+      </a>
+
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">🔔</span> Alerts
+        <span class="nav-badge">3</span>
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-icon">⚙️</span> Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-profile">
+        <div class="profile-avatar">AK</div>
+        <div class="profile-info">
+          <div class="profile-name">Anil Kumar</div>
+          <div class="profile-role">Community Admin</div>
+        </div>
+        <span style="font-size:16px;color:var(--clr-text-dim)">⋮</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ──────────────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <button class="hamburger-btn" id="hamburger-btn">☰</button>
+      <div class="header-title">
+        <h1>Dashboard</h1>
+        <p>Wednesday, 11 March 2026 · <span class="live-dot">Live</span></p>
+      </div>
+      <div class="header-actions">
+        <div class="header-search">
+          <span>🔍</span>
+          <input type="text" id="search-input" placeholder="Search reports…" aria-label="Search reports" />
+        </div>
+        <button class="icon-btn" title="Notifications" aria-label="Notifications">
+          🔔
+          <span class="notif-dot"></span>
+        </button>
+        <button class="icon-btn" title="Export" aria-label="Export" onclick="showToast('Report exported successfully','success')">📤</button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content">
+
+      <!-- ── Alerts ───────────────────────────────────── -->
+      <div id="alerts-section"></div>
+
+      <!-- ── Hero ────────────────────────────────────── -->
+      <section class="hero-section">
+        <div class="water-blob" style="width:300px;height:300px;background:rgba(0,200,255,0.06);top:-100px;right:-50px;animation-delay:0s"></div>
+        <div class="water-blob" style="width:200px;height:200px;background:rgba(0,102,255,0.06);bottom:-50px;left:200px;animation-delay:3s"></div>
+        <div class="hero-grid">
+          <div>
+            <div class="hero-eyebrow">
+              <span class="live-dot"></span>
+              Live Community Monitoring
+            </div>
+            <h2 class="hero-title">Water For<br>Every Home, Today</h2>
+            <p class="hero-desc">Track water issues, submit reports, and monitor quality across all zones in real time. Together we can protect our most precious resource.</p>
+            <div class="hero-actions">
+              <a href="report.html" class="btn btn-primary">
+                ✏️ Report an Issue
+              </a>
+              <a href="map.html" class="btn btn-outline">
+                🗺️ View Live Map
+              </a>
+            </div>
+          </div>
+          <div class="hero-stat-cluster">
+            <div class="hero-stat-item">
+              <div class="hero-stat-num" id="h-stat-1">0</div>
+              <div class="hero-stat-lbl">Reports This Month</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-num" id="h-stat-2">0%</div>
+              <div class="hero-stat-lbl">Resolution Rate</div>
+            </div>
+            <div class="hero-stat-item">
+              <div class="hero-stat-num" id="h-stat-3">0h</div>
+              <div class="hero-stat-lbl">Avg. Response Time</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Stats Grid ───────────────────────────────── -->
+      <div class="stats-grid">
+        <div class="stat-card animate-in" style="--stat-clr: #00c8ff">
+          <div class="stat-icon" style="--stat-clr:#00c8ff">📋</div>
+          <div class="stat-value text-primary" id="stat-total">0</div>
+          <div class="stat-label">Total Reports</div>
+          <div class="stat-change up">▲ 12% this month</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr: #ef4444">
+          <div class="stat-icon" style="--stat-clr:#ef4444">🚨</div>
+          <div class="stat-value text-danger" id="stat-active">0</div>
+          <div class="stat-label">Active Issues</div>
+          <div class="stat-change down">▼ Need attention</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr: #22c55e">
+          <div class="stat-icon" style="--stat-clr:#22c55e">✅</div>
+          <div class="stat-value text-good" id="stat-resolved">0</div>
+          <div class="stat-label">Resolved Today</div>
+          <div class="stat-change up">▲ Ahead of schedule</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr: #00e5c8">
+          <div class="stat-icon" style="--stat-clr:#00e5c8">💧</div>
+          <div class="stat-value text-teal" id="stat-saved">0</div>
+          <div class="stat-label">Litres Saved (Est.)</div>
+          <div class="stat-change up">▲ 8% vs last week</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr: #f59e0b">
+          <div class="stat-icon" style="--stat-clr:#f59e0b">🔬</div>
+          <div class="stat-value" style="color:#f59e0b" id="stat-quality">0</div>
+          <div class="stat-label">Avg Quality Score</div>
+          <div class="stat-change up">▲ /100 index</div>
+        </div>
+      </div>
+
+      <!-- ── Main grid ────────────────────────────────── -->
+      <div class="section-grid" style="margin-bottom: var(--space-xl)">
+
+        <!-- Recent Reports -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Recent Reports</div>
+              <div class="card-subtitle">Latest community-submitted issues</div>
+            </div>
+            <a href="report.html" class="btn btn-sm btn-outline">View All →</a>
+          </div>
+          <div class="tabs" id="report-tabs">
+            <div class="tab active" data-filter="all">All</div>
+            <div class="tab" data-filter="leakage">Leakage</div>
+            <div class="tab" data-filter="quality">Quality</div>
+            <div class="tab" data-filter="shortage">Shortage</div>
+          </div>
+          <div id="reports-list"></div>
+        </div>
+
+        <!-- Quality Ring + Zone List -->
+        <div style="display:flex;flex-direction:column;gap:var(--space-md)">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">City Quality Index</div>
+                <div class="card-subtitle">Overall water quality score</div>
+              </div>
+              <span class="badge badge-good">Good</span>
+            </div>
+            <div class="quality-ring-wrap">
+              <div class="quality-ring">
+                <svg viewBox="0 0 120 120" width="140" height="140">
+                  <circle class="ring-bg"   cx="60" cy="60" r="50"/>
+                  <circle class="ring-fill" cx="60" cy="60" r="50"
+                    id="quality-ring-fill"
+                    stroke="url(#ring-grad)"
+                    stroke-dasharray="314"
+                    stroke-dashoffset="314"/>
+                  <defs>
+                    <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%"   stop-color="#00c8ff"/>
+                      <stop offset="100%" stop-color="#00e5c8"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="ring-value">
+                  <span id="ring-val">79</span>
+                  <span class="ring-unit">/ 100</span>
+                </div>
+              </div>
+              <div class="quality-label text-good">City average is <strong>Good</strong></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Zone Status</div>
+            </div>
+            <div id="zone-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Activity Timeline + Map Preview ─────────── -->
+      <div class="section-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Activity Timeline</div>
+              <div class="card-subtitle">Recent system activity</div>
+            </div>
+            <span class="live-dot">Real-time</span>
+          </div>
+          <div class="timeline" id="timeline-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Issue Hotspots</div>
+              <div class="card-subtitle">Geographic overview</div>
+            </div>
+            <a href="map.html" class="btn btn-sm btn-outline">Full Map →</a>
+          </div>
+          <div id="map-container">
+            <div id="leaflet-map"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/data.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ── Alerts ────────────────────────────────────────────
+  const alertsEl = document.getElementById('alerts-section');
+  ALERTS.forEach(a => {
+    alertsEl.innerHTML += `
+      <div class="alert-banner ${a.type}">
+        <span class="alert-banner-icon">${a.icon}</span>
+        <span class="alert-banner-text">${a.msg}</span>
+        <span class="alert-banner-time">${a.time}</span>
+      </div>`;
+  });
+
+  // ── Hero counters ──────────────────────────────────────
+  setTimeout(() => {
+    animateCounter(document.getElementById('h-stat-1'), 247, 1500);
+    animateCounter(document.getElementById('h-stat-2'), 91, 1500, '', '%');
+    animateCounter(document.getElementById('h-stat-3'), 4.2, 1500, '', 'h');
+  }, 400);
+
+  // ── Stat counters ──────────────────────────────────────
+  animateCounter(document.getElementById('stat-total'),    STATS.totalReports,    1400);
+  animateCounter(document.getElementById('stat-active'),   STATS.activeIssues,    1400);
+  animateCounter(document.getElementById('stat-resolved'), STATS.resolvedToday,   1400);
+  animateCounter(document.getElementById('stat-saved'),    2400000, 1800, '', '');
+  animateCounter(document.getElementById('stat-quality'),  STATS.avgQualityScore, 1400);
+
+  // Format saved after animation
+  setTimeout(() => {
+    document.getElementById('stat-saved').textContent = '2.4M';
+  }, 1900);
+
+  // ── Quality ring ───────────────────────────────────────
+  setTimeout(() => {
+    const score = STATS.avgQualityScore;
+    const circumference = 314;
+    const offset = circumference - (score / 100) * circumference;
+    document.getElementById('quality-ring-fill').style.strokeDashoffset = offset;
+    animateCounter(document.getElementById('ring-val'), score, 1500);
+  }, 300);
+
+  // ── Reports List ───────────────────────────────────────
+  function renderReports(filter = 'all') {
+    const container = document.getElementById('reports-list');
+    const filtered = filter === 'all' ? REPORTS : REPORTS.filter(r => r.type === filter);
+    container.innerHTML = filtered.slice(0, 5).map(r => {
+      const tc = TYPE_CONFIG[r.type] || { icon:'📌', color:'#8fa3be', label: r.type };
+      const sc = STATUS_CONFIG[r.status] || { label: r.status, cls: 'badge-info' };
+      return `
+        <div class="report-item animate-in">
+          <div class="report-item-icon" style="background:${tc.color}22;color:${tc.color}">${tc.icon}</div>
+          <div class="report-item-body">
+            <div class="report-item-title">${r.title}</div>
+            <div class="report-item-meta">📍 ${r.location} &nbsp;·&nbsp; 🕐 ${timeAgo(r.date, r.time)}</div>
+          </div>
+          <div class="report-item-right">
+            <span class="badge ${sc.cls}">${sc.label}</span>
+            <span class="text-muted text-xs">👍 ${r.votes}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  renderReports();
+
+  // Tab filtering
+  document.querySelectorAll('#report-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#report-tabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderReports(tab.dataset.filter);
+    });
+  });
+
+  // Search
+  document.getElementById('search-input')?.addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    const items = document.querySelectorAll('.report-item');
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(q) ? '' : 'none';
+    });
+  });
+
+  // ── Zone list ──────────────────────────────────────────
+  const scoreColor = s => s >= 80 ? '#22c55e' : s >= 60 ? '#f59e0b' : '#ef4444';
+  document.getElementById('zone-list').innerHTML = QUALITY_ZONES.map(z => `
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="text-sm fw-600">${z.name}</span>
+        <span class="text-sm" style="color:${scoreColor(z.score)}">${z.score}/100</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:0%;background:${scoreColor(z.score)}" data-target="${z.score}"></div>
+      </div>
+    </div>`).join('');
+
+  setTimeout(() => {
+    document.querySelectorAll('.progress-fill[data-target]').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 300);
+
+  // ── Timeline ───────────────────────────────────────────
+  const timelineEvents = [
+    { icon:'🚨', title:'Critical Alert – Main Street pipe burst', meta:'12 minutes ago', dot:'rgba(239,68,68,0.2)', dtxt:'#ef4444' },
+    { icon:'👷', title:'Crew dispatched to Main Street', meta:'20 minutes ago',           dot:'rgba(59,130,246,0.2)', dtxt:'#3b82f6' },
+    { icon:'🔬', title:'Zone C turbidity threshold exceeded', meta:'1 hour ago',           dot:'rgba(245,158,11,0.2)', dtxt:'#f59e0b' },
+    { icon:'✅', title:'Sector 12 water supply restored', meta:'3 hours ago',              dot:'rgba(34,197,94,0.2)',  dtxt:'#22c55e' },
+    { icon:'📝', title:'New report: Discoloured water Block C', meta:'5 hours ago',        dot:'rgba(0,200,255,0.2)', dtxt:'#00c8ff' },
+    { icon:'📡', title:'Sensor network maintenance completed', meta:'Yesterday',            dot:'rgba(139,92,246,0.2)','dtxt':'#8b5cf6' },
+  ];
+  document.getElementById('timeline-list').innerHTML = timelineEvents.map(e => `
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:${e.dot};border-color:${e.dtxt};color:${e.dtxt}">${e.icon}</div>
+      <div class="timeline-body">
+        <div class="timeline-title">${e.title}</div>
+        <div class="timeline-meta">${e.meta}</div>
+      </div>
+    </div>`).join('');
+
+  // ── Mini Map ───────────────────────────────────────────
+  const map = L.map('leaflet-map', { zoomControl: false, attributionControl: false }).setView([20.5937, 78.9629], 12);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  const markerColors = { critical:'#ef4444', investigating:'#f59e0b', pending:'#3b82f6', resolved:'#22c55e' };
+  REPORTS.forEach(r => {
+    const color = markerColors[r.status] || '#8fa3be';
+    const icon = L.divIcon({
+      html: `<div style="width:14px;height:14px;background:${color};border:2px solid rgba(255,255,255,0.8);border-radius:50%;box-shadow:0 0 8px ${color}88"></div>`,
+      className: '', iconSize: [14,14], iconAnchor: [7,7]
+    });
+    L.marker([r.lat, r.lng], { icon }).addTo(map)
+      .bindPopup(`<strong>${r.title}</strong><br>${r.location}`, { className: 'custom-popup' });
+  });
+});
+</script>
+
+<style>
+/* Map popup */
+.leaflet-popup-content-wrapper {
+  background: #0d1526;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #e2eaf5;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.leaflet-popup-tip { background: #0d1526; }
+</style>
+
+</body>
+</html>

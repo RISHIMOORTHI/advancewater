@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Issue – AQUA Water Resource System</title>
+  <meta name="description" content="Submit a water issue report to help your community." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="app-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💧</div>
+      <div class="logo-text">AQUA<span>Water Resource System</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a class="nav-item" href="map.html"><span class="nav-icon">🗺️</span> Live Map<span class="nav-badge">3</span></a>
+      <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span> Analytics</a>
+      <div class="nav-section-label">Community</div>
+      <a class="nav-item active" href="report.html"><span class="nav-icon">📝</span> Report Issue</a>
+      <a class="nav-item" href="report.html"><span class="nav-icon">📋</span> My Reports<span class="nav-badge warn">6</span></a>
+      <div class="nav-section-label">Monitoring</div>
+      <a class="nav-item" href="analytics.html"><span class="nav-icon">🔬</span> Water Quality</a>
+      <a class="nav-item" href="analytics.html"><span class="nav-icon">📡</span> Sensor Network<span class="nav-badge good">Online</span></a>
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" href="#"><span class="nav-icon">🔔</span> Alerts<span class="nav-badge">3</span></a>
+      <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-profile">
+        <div class="profile-avatar">AK</div>
+        <div class="profile-info">
+          <div class="profile-name">Anil Kumar</div>
+          <div class="profile-role">Community Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <button class="hamburger-btn" id="hamburger-btn">☰</button>
+      <div class="header-title">
+        <h1>Report an Issue</h1>
+        <p>Help your community by documenting water problems</p>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Notifications">🔔<span class="notif-dot"></span></button>
+      </div>
+    </header>
+
+    <main class="page-content" style="max-width:1100px">
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" id="step-indicator">
+        <div class="step-item active" id="step-1">
+          <div class="step-circle">1</div>
+          <div class="step-label">Issue Type</div>
+        </div>
+        <div class="step-item" id="step-2">
+          <div class="step-circle">2</div>
+          <div class="step-label">Details</div>
+        </div>
+        <div class="step-item" id="step-3">
+          <div class="step-circle">3</div>
+          <div class="step-label">Location</div>
+        </div>
+        <div class="step-item" id="step-4">
+          <div class="step-circle">4</div>
+          <div class="step-label">Review</div>
+        </div>
+      </div>
+
+      <div class="section-grid">
+
+        <!-- FORM PANEL -->
+        <div style="grid-column: span 1">
+
+          <!-- Step 1 -->
+          <div id="form-step-1" class="card" style="margin-bottom:var(--space-md)">
+            <div class="card-header">
+              <div>
+                <div class="card-title">1. Select Issue Type</div>
+                <div class="card-subtitle">What kind of water problem are you reporting?</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-md)" id="type-grid">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div id="form-step-2" class="card" style="margin-bottom:var(--space-md)">
+            <div class="card-header">
+              <div>
+                <div class="card-title">2. Describe the Problem</div>
+                <div class="card-subtitle">Provide as many details as possible</div>
+              </div>
+            </div>
+            <form id="report-form">
+              <div class="form-group">
+                <label class="form-label" for="report-title">Issue Title *</label>
+                <input class="form-control" type="text" id="report-title" placeholder="e.g. Pipe burst near market area" required />
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md)">
+                <div class="form-group">
+                  <label class="form-label" for="report-severity">Severity *</label>
+                  <select class="form-control" id="report-severity" required>
+                    <option value="">Select severity…</option>
+                    <option value="low">🟢 Low – Minor inconvenience</option>
+                    <option value="medium">🟡 Medium – Affects daily use</option>
+                    <option value="high">🟠 High – Significant impact</option>
+                    <option value="critical">🔴 Critical – Emergency</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="report-since">Issue Started *</label>
+                  <input class="form-control" type="datetime-local" id="report-since" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="report-desc">Detailed Description *</label>
+                <textarea class="form-control" id="report-desc" rows="4" placeholder="Describe the issue in detail – what you observe, how long it's been happening, how many people are affected…" required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Attach Photos / Videos</label>
+                <div id="upload-area" style="
+                  border: 2px dashed var(--clr-border-hi);
+                  border-radius: var(--r-lg);
+                  padding: var(--space-xl);
+                  text-align: center;
+                  cursor: pointer;
+                  transition: all var(--t-fast);
+                  background: var(--clr-surface);
+                ">
+                  <div style="font-size:36px;margin-bottom:var(--space-sm)">📷</div>
+                  <div style="font-size:14px;font-weight:600;color:var(--clr-text-md)">Drop files here or <span style="color:var(--clr-primary)">browse</span></div>
+                  <div style="font-size:12px;color:var(--clr-text-dim);margin-top:4px">JPG, PNG, MP4 · Max 10MB each</div>
+                  <input type="file" id="file-input" multiple accept="image/*,video/*" style="display:none" />
+                </div>
+                <div id="file-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"></div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Step 3 -->
+          <div id="form-step-3" class="card" style="margin-bottom:var(--space-md)">
+            <div class="card-header">
+              <div>
+                <div class="card-title">3. Location Details</div>
+                <div class="card-subtitle">Where is the issue located?</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md)">
+              <div class="form-group">
+                <label class="form-label" for="report-zone">Zone / Ward *</label>
+                <select class="form-control" id="report-zone" required>
+                  <option value="">Select zone…</option>
+                  <option>Zone A – North</option>
+                  <option>Zone B – South</option>
+                  <option>Zone C – East</option>
+                  <option>Zone D – West</option>
+                  <option>Zone E – Centre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="report-landmark">Nearest Landmark</label>
+                <input class="form-control" type="text" id="report-landmark" placeholder="e.g. Near City Park Gate" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="report-address">Full Address *</label>
+              <input class="form-control" type="text" id="report-address" placeholder="Street, Area, City" required />
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md)">
+              <div class="form-group">
+                <label class="form-label">Estimated Affected Households</label>
+                <select class="form-control" id="report-households">
+                  <option>1 – 5</option>
+                  <option>6 – 20</option>
+                  <option>21 – 100</option>
+                  <option>100+</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Notify Me on Updates?</label>
+                <select class="form-control" id="report-notify">
+                  <option>Yes – Email &amp; SMS</option>
+                  <option>Yes – Email only</option>
+                  <option>Yes – SMS only</option>
+                  <option>No</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div style="display:flex;gap:var(--space-md);justify-content:flex-end">
+            <button class="btn btn-outline" onclick="showToast('Draft saved','info')">💾 Save Draft</button>
+            <button class="btn btn-primary btn-lg" id="submit-btn" onclick="handleSubmit()">
+              🚀 Submit Report
+            </button>
+          </div>
+        </div>
+
+        <!-- SIDEBAR PANEL -->
+        <div style="display:flex;flex-direction:column;gap:var(--space-md)">
+
+          <!-- Guidelines -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:var(--space-md)">📌 Reporting Guidelines</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span style="font-size:18px">📸</span>
+                <div><div style="font-size:13px;font-weight:600">Add Photos</div><div style="font-size:12px;color:var(--clr-text-md)">Photos help teams resolve issues 40% faster</div></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span style="font-size:18px">📍</span>
+                <div><div style="font-size:13px;font-weight:600">Be Specific</div><div style="font-size:12px;color:var(--clr-text-md)">Exact location helps crews find the spot quickly</div></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span style="font-size:18px">⏱️</span>
+                <div><div style="font-size:13px;font-weight:600">Report Early</div><div style="font-size:12px;color:var(--clr-text-md)">Early reports reduce water loss significantly</div></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span style="font-size:18px">🔄</span>
+                <div><div style="font-size:13px;font-weight:600">Track Progress</div><div style="font-size:12px;color:var(--clr-text-md)">Enable notifications to get real-time updates</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- My Recent Reports -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">My Recent Reports</div>
+              <span class="badge badge-primary">6 active</span>
+            </div>
+            <div id="my-reports-list"></div>
+          </div>
+
+          <!-- Priority Hotline -->
+          <div class="card" style="background:var(--clr-primary-dim);border-color:rgba(0,200,255,0.3)">
+            <div style="text-align:center;padding:var(--space-sm) 0">
+              <div style="font-size:32px;margin-bottom:8px">📞</div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:4px">24/7 Emergency Hotline</div>
+              <div style="font-size:24px;font-weight:800;color:var(--clr-primary);font-family:'Space Grotesk',sans-serif;margin-bottom:8px">1800-AQUA-911</div>
+              <div style="font-size:12px;color:var(--clr-text-md)">For critical water emergencies – burst mains, complete outages, contamination alerts</div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:var(--space-md)">Your Impact</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md)">
+              <div style="text-align:center">
+                <div style="font-size:28px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--clr-primary)">18</div>
+                <div style="font-size:11px;color:var(--clr-text-md)">Reports Filed</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:28px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--clr-good)">94%</div>
+                <div style="font-size:11px;color:var(--clr-text-md)">Resolved Rate</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:28px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--clr-teal)">340k</div>
+                <div style="font-size:11px;color:var(--clr-text-md)">Litres Saved</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-size:28px;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--clr-warn)">3.1h</div>
+                <div style="font-size:11px;color:var(--clr-text-md)">Avg Response</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="js/data.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ── Type Cards ────────────────────────────────────────
+  const types = [
+    { key:'leakage',        icon:'💧', label:'Water Leakage',    desc:'Pipe burst, dripping, open tap' },
+    { key:'quality',        icon:'🔬', label:'Water Quality',    desc:'Discolouration, smell, taste' },
+    { key:'shortage',       icon:'🪣', label:'Water Shortage',   desc:'No supply, low pressure' },
+    { key:'infrastructure', icon:'🔧', label:'Infrastructure',   desc:'Meter, valve, manhole issues' },
+    { key:'contamination',  icon:'⚠️', label:'Contamination',    desc:'Sewage mixing, chemical smell' },
+    { key:'illegal',        icon:'🚫', label:'Illegal Usage',    desc:'Unauthorized connections' },
+  ];
+  let selectedType = null;
+  const grid = document.getElementById('type-grid');
+  grid.innerHTML = types.map(t => `
+    <div class="type-card" id="tc-${t.key}" onclick="selectType('${t.key}')" style="
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-md);
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--clr-surface);
+    ">
+      <div style="font-size:26px;margin-bottom:6px">${t.icon}</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:3px">${t.label}</div>
+      <div style="font-size:11px;color:var(--clr-text-md)">${t.desc}</div>
+    </div>`).join('');
+
+  window.selectType = function(key) {
+    selectedType = key;
+    document.querySelectorAll('.type-card').forEach(el => {
+      el.style.borderColor = 'var(--clr-border)';
+      el.style.background = 'var(--clr-surface)';
+    });
+    const el = document.getElementById('tc-' + key);
+    el.style.borderColor = 'var(--clr-primary)';
+    el.style.background = 'var(--clr-primary-dim)';
+    showToast(`Issue type set to: ${types.find(t=>t.key===key).label}`, 'info');
+  };
+
+  // ── File Upload ───────────────────────────────────────
+  const uploadArea = document.getElementById('upload-area');
+  const fileInput  = document.getElementById('file-input');
+  const preview    = document.getElementById('file-preview');
+
+  uploadArea.addEventListener('click', () => fileInput.click());
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = 'var(--clr-primary)'; });
+  uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = 'var(--clr-border-hi)'; });
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.style.borderColor = 'var(--clr-border-hi)';
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      const chip = document.createElement('div');
+      chip.style.cssText = 'display:flex;align-items:center;gap:6px;background:var(--clr-surface-md);border:1px solid var(--clr-border);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--clr-text-md)';
+      chip.innerHTML = `📎 ${file.name.substring(0,20)}${file.name.length>20?'…':''} <span onclick="this.parentElement.remove()" style="cursor:pointer;color:var(--clr-danger);margin-left:4px">✕</span>`;
+      preview.appendChild(chip);
+    });
+    showToast(`${files.length} file(s) attached`, 'success');
+  }
+
+  // ── My Recent Reports ──────────────────────────────────
+  document.getElementById('my-reports-list').innerHTML = REPORTS.slice(0,3).map(r => {
+    const sc = STATUS_CONFIG[r.status] || { label: r.status, cls: 'badge-info' };
+    const tc = TYPE_CONFIG[r.type] || { icon:'📌', color:'#8fa3be' };
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid var(--clr-border)">
+      <span style="font-size:18px">${tc.icon}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+        <div style="font-size:11px;color:var(--clr-text-md)">${timeAgo(r.date, r.time)}</div>
+      </div>
+      <span class="badge ${sc.cls}">${sc.label}</span>
+    </div>`;
+  }).join('') + `<a href="#" style="display:block;text-align:center;padding:10px;font-size:12px;color:var(--clr-primary)">View all reports →</a>`;
+
+  // ── Set default datetime ────────────────────────────────
+  const now = new Date();
+  const localISO = new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+  document.getElementById('report-since').value = localISO;
+
+  // ── Step indicator updates ────────────────────────────
+  window.handleSubmit = function() {
+    const title = document.getElementById('report-title').value.trim();
+    const desc  = document.getElementById('report-desc').value.trim();
+    const zone  = document.getElementById('report-zone').value;
+    const addr  = document.getElementById('report-address').value.trim();
+
+    if (!selectedType) { showToast('Please select an issue type first', 'warning'); return; }
+    if (!title)        { showToast('Please enter an issue title', 'warning'); return; }
+    if (!desc)         { showToast('Please describe the issue', 'warning');  return; }
+    if (!zone)         { showToast('Please select a zone', 'warning');        return; }
+    if (!addr)         { showToast('Please enter the address', 'warning');    return; }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Submitting…';
+    btn.style.opacity = '0.7';
+
+    setTimeout(() => {
+      showToast('🎉 Report submitted! Reference: RPT-2026-' + Math.floor(Math.random()*900+100), 'success');
+      btn.innerHTML = '✅ Submitted!';
+      btn.style.background = 'var(--clr-good)';
+      setTimeout(() => window.location.href = 'index.html', 2000);
+    }, 1800);
+  };
+});
+</script>
+</body>
+</html>

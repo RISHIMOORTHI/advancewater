@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics – AQUA Water Resource System</title>
+  <meta name="description" content="Water usage statistics, quality trends, and issue analytics for your community." />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .quality-param {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--clr-border);
+    }
+    .quality-param:last-child { border-bottom: none; }
+    .qp-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .qp-body { flex: 1; }
+    .qp-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .qp-bar { height: 6px; background: var(--clr-surface-hi); border-radius: 3px; overflow: hidden; }
+    .qp-fill { height: 100%; border-radius: 3px; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+    .qp-val { font-size: 13px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; color: var(--clr-text-md); }
+    .zone-quality-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--r-md);
+      padding: var(--space-md);
+      transition: all var(--t-fast);
+      cursor: default;
+    }
+    .zone-quality-card:hover { border-color: var(--clr-primary); transform: translateY(-2px); }
+    .zone-score-big {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+    @media (max-width: 768px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">💧</div>
+      <div class="logo-text">AQUA<span>Water Resource System</span></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <a class="nav-item" href="index.html"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a class="nav-item" href="map.html"><span class="nav-icon">🗺️</span> Live Map<span class="nav-badge">3</span></a>
+      <a class="nav-item active" href="analytics.html"><span class="nav-icon">📊</span> Analytics</a>
+      <div class="nav-section-label">Community</div>
+      <a class="nav-item" href="report.html"><span class="nav-icon">📝</span> Report Issue</a>
+      <a class="nav-item" href="report.html"><span class="nav-icon">📋</span> My Reports<span class="nav-badge warn">6</span></a>
+      <div class="nav-section-label">Monitoring</div>
+      <a class="nav-item" href="analytics.html"><span class="nav-icon">🔬</span> Water Quality</a>
+      <a class="nav-item" href="analytics.html"><span class="nav-icon">📡</span> Sensor Network<span class="nav-badge good">Online</span></a>
+      <div class="nav-section-label">System</div>
+      <a class="nav-item" href="#"><span class="nav-icon">🔔</span> Alerts<span class="nav-badge">3</span></a>
+      <a class="nav-item" href="#"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-profile">
+        <div class="profile-avatar">AK</div>
+        <div class="profile-info">
+          <div class="profile-name">Anil Kumar</div>
+          <div class="profile-role">Community Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="top-header">
+      <button class="hamburger-btn" id="hamburger-btn">☰</button>
+      <div class="header-title">
+        <h1>Analytics</h1>
+        <p>Water usage, quality, and issue trends</p>
+      </div>
+      <div class="header-actions">
+        <div class="tabs" style="margin:0;background:var(--clr-surface)">
+          <div class="tab active" data-range="7d">7 Days</div>
+          <div class="tab" data-range="30d">30 Days</div>
+          <div class="tab" data-range="90d">90 Days</div>
+        </div>
+        <button class="icon-btn" onclick="showToast('Report downloaded','success')">📥</button>
+        <button class="icon-btn" title="Notifications">🔔<span class="notif-dot"></span></button>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- KPI Row -->
+      <div class="kpi-row">
+        <div class="stat-card animate-in" style="--stat-clr:#00c8ff">
+          <div class="stat-icon" style="--stat-clr:#00c8ff">💧</div>
+          <div class="stat-value text-primary" id="k1">0</div>
+          <div class="stat-label">kL Daily Consumption</div>
+          <div class="stat-change up">▲ 3.2% vs last week</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr:#22c55e">
+          <div class="stat-icon" style="--stat-clr:#22c55e">♻️</div>
+          <div class="stat-value text-good" id="k2">0%</div>
+          <div class="stat-label">Treatment Efficiency</div>
+          <div class="stat-change up">▲ Optimal range</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr:#f59e0b">
+          <div class="stat-icon" style="--stat-clr:#f59e0b">⏱️</div>
+          <div class="stat-value" style="color:#f59e0b" id="k3">0h</div>
+          <div class="stat-label">Avg Resolution Time</div>
+          <div class="stat-change down">▼ 0.8h slower than target</div>
+        </div>
+        <div class="stat-card animate-in" style="--stat-clr:#8b5cf6">
+          <div class="stat-icon" style="--stat-clr:#8b5cf6">🏆</div>
+          <div class="stat-value" style="color:#8b5cf6" id="k4">0</div>
+          <div class="stat-label">Community Reports</div>
+          <div class="stat-change up">▲ 91% resolved</div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1 -->
+      <div class="section-grid" style="margin-bottom:var(--space-xl)">
+        <!-- Water Usage Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Daily Water Consumption</div>
+              <div class="card-subtitle">Kilolitres by sector — past 7 days</div>
+            </div>
+            <div class="chip-group" style="margin:0;gap:6px">
+              <div class="chip active" style="font-size:10px;padding:3px 8px">Residential</div>
+              <div class="chip active" style="font-size:10px;padding:3px 8px">Commercial</div>
+              <div class="chip active" style="font-size:10px;padding:3px 8px">Industrial</div>
+            </div>
+          </div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="usage-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Issue Types Donut -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Issue Breakdown</div>
+              <div class="card-subtitle">By category — current month</div>
+            </div>
+          </div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="type-chart"></canvas>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:var(--space-md)">
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;flex-shrink:0"></span>Leakage (38%)</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;flex-shrink:0"></span>Quality (28%)</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;flex-shrink:0"></span>Shortage (20%)</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#8b5cf6;flex-shrink:0"></span>Infrastructure (14%)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="section-grid" style="margin-bottom:var(--space-xl)">
+        <!-- Monthly trend -->
+        <div class="card" style="grid-column:span 1">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Monthly Report Trends</div>
+              <div class="card-subtitle">Reports filed vs resolved — last 7 months</div>
+            </div>
+          </div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="monthly-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Quality params -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Water Quality Parameters</div>
+              <div class="card-subtitle">City average readings</div>
+            </div>
+            <span class="badge badge-good">Within Safe Limits</span>
+          </div>
+          <div id="quality-params"></div>
+        </div>
+      </div>
+
+      <!-- Zone Quality Table + Response Time -->
+      <div class="section-grid" style="margin-bottom:var(--space-xl)">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Zone Quality Report</div>
+              <div class="card-subtitle">Detailed by zone</div>
+            </div>
+            <button class="btn btn-sm btn-ghost" onclick="showToast('Exported to CSV','success')">↓ Export</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Zone</th><th>pH</th><th>Turbidity (NTU)</th><th>Chlorine (mg/L)</th><th>TDS (ppm)</th><th>Score</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="zone-table-body"></tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:var(--space-md)">
+          <!-- Zone Scores Grid -->
+          <div class="card" style="flex:1">
+            <div class="card-title" style="margin-bottom:var(--space-md)">Zone Score Cards</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="zone-score-cards"></div>
+          </div>
+
+          <!-- Resolution Donut -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Resolution Status</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);align-items:center">
+              <div class="chart-wrap" style="height:140px">
+                <canvas id="resolution-chart"></canvas>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:12px;display:flex;gap:8px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:#22c55e;flex-shrink:0"></span>Resolved <strong style="margin-left:auto">57%</strong></div>
+                <div style="font-size:12px;display:flex;gap:8px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;flex-shrink:0"></span>In Progress <strong style="margin-left:auto">24%</strong></div>
+                <div style="font-size:12px;display:flex;gap:8px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;flex-shrink:0"></span>Pending <strong style="margin-left:auto">12%</strong></div>
+                <div style="font-size:12px;display:flex;gap:8px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;flex-shrink:0"></span>Critical <strong style="margin-left:auto">7%</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="js/data.js"></script>
+<script>
+// ── Chart.js Global Defaults ──────────────────────────────────────────────
+Chart.defaults.color = '#8fa3be';
+Chart.defaults.font.family = 'Inter';
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.plugins.tooltip.backgroundColor = '#0d1526';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.titleColor = '#e2eaf5';
+Chart.defaults.plugins.tooltip.bodyColor = '#8fa3be';
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── KPI Counters ────────────────────────────────────────────────────────
+  animateCounter(document.getElementById('k1'), 9400, 1500, '', '');
+  animateCounter(document.getElementById('k2'), 97,   1500, '', '%');
+  animateCounter(document.getElementById('k3'), 4.2,  1500, '', 'h');
+  animateCounter(document.getElementById('k4'), 247,  1500);
+
+  // ── Usage Chart (stacked bar) ───────────────────────────────────────────
+  new Chart(document.getElementById('usage-chart'), {
+    type: 'bar',
+    data: {
+      labels: USAGE_DATA.labels,
+      datasets: [
+        {
+          label: 'Residential',
+          data: USAGE_DATA.residential,
+          backgroundColor: 'rgba(0,200,255,0.7)',
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+        {
+          label: 'Commercial',
+          data: USAGE_DATA.commercial,
+          backgroundColor: 'rgba(0,229,200,0.6)',
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+        {
+          label: 'Industrial',
+          data: USAGE_DATA.industrial,
+          backgroundColor: 'rgba(0,102,255,0.6)',
+          borderRadius: 4,
+          borderSkipped: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, position: 'top', labels: { usePointStyle: true, pointStyle: 'circle', padding: 15, color: '#8fa3be', font: { size: 11 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4d6480' } },
+        y: {
+          stacked: false,
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#4d6480', callback: v => v >= 1000 ? (v/1000).toFixed(0)+'k' : v }
+        }
+      }
+    }
+  });
+
+  // ── Issue Type Donut ────────────────────────────────────────────────────
+  new Chart(document.getElementById('type-chart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Leakage', 'Quality', 'Shortage', 'Infrastructure'],
+      datasets: [{
+        data: [94, 69, 50, 34],
+        backgroundColor: ['rgba(59,130,246,0.8)','rgba(245,158,11,0.8)','rgba(239,68,68,0.8)','rgba(139,92,246,0.8)'],
+        borderColor: '#080e1a',
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.label}: ${ctx.parsed} reports`
+          }
+        }
+      }
+    }
+  });
+
+  // ── Monthly Trend (Line) ───────────────────────────────────────────────
+  const gradField = document.getElementById('monthly-chart').getContext('2d');
+  const gFiled = gradField.createLinearGradient(0,0,0,200);
+  gFiled.addColorStop(0, 'rgba(0,200,255,0.3)');
+  gFiled.addColorStop(1, 'rgba(0,200,255,0)');
+  const gResol = gradField.createLinearGradient(0,0,0,200);
+  gResol.addColorStop(0, 'rgba(34,197,94,0.3)');
+  gResol.addColorStop(1, 'rgba(34,197,94,0)');
+
+  new Chart(document.getElementById('monthly-chart'), {
+    type: 'line',
+    data: {
+      labels: MONTHLY_STATS.labels,
+      datasets: [
+        {
+          label: 'Filed',
+          data: MONTHLY_STATS.labels.map((_,i) =>
+            MONTHLY_STATS.leakage[i] + MONTHLY_STATS.quality[i] + MONTHLY_STATS.shortage[i]
+          ),
+          borderColor: '#00c8ff',
+          backgroundColor: gFiled,
+          borderWidth: 2,
+          pointBackgroundColor: '#00c8ff',
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.4,
+        },
+        {
+          label: 'Resolved',
+          data: MONTHLY_STATS.resolved,
+          borderColor: '#22c55e',
+          backgroundColor: gResol,
+          borderWidth: 2,
+          pointBackgroundColor: '#22c55e',
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.4,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true, position: 'top',
+          labels: { usePointStyle: true, pointStyle: 'circle', padding: 15, color: '#8fa3be', font: { size: 11 } }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4d6480' } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4d6480' } }
+      }
+    }
+  });
+
+  // ── Resolution Donut ───────────────────────────────────────────────────
+  new Chart(document.getElementById('resolution-chart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Resolved','In Progress','Pending','Critical'],
+      datasets: [{
+        data: [57,24,12,7],
+        backgroundColor: ['rgba(34,197,94,0.85)','rgba(245,158,11,0.85)','rgba(59,130,246,0.85)','rgba(239,68,68,0.85)'],
+        borderColor: '#080e1a',
+        borderWidth: 3,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '72%',
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // ── Quality Parameters ─────────────────────────────────────────────────
+  const params = [
+    { icon:'⚗️',  name:'pH Level',          val:'7.3',   unit:'pH',    pct:73,  safe:'6.5–8.5',   clr:'#22c55e' },
+    { icon:'🌊',  name:'Turbidity',          val:'1.6',   unit:'NTU',   pct:32,  safe:'< 4 NTU',   clr:'#22c55e' },
+    { icon:'🧪',  name:'Chlorine',           val:'0.65',  unit:'mg/L',  pct:65,  safe:'0.2–1.0',   clr:'#22c55e' },
+    { icon:'🔬',  name:'Total Dissolved Solids',val:'410', unit:'ppm',  pct:58,  safe:'< 500 ppm', clr:'#f59e0b' },
+    { icon:'🦠',  name:'Coliform Bacteria',  val:'0',     unit:'CFU/mL',pct:0,   safe:'0',         clr:'#22c55e' },
+    { icon:'💊',  name:'Fluoride',           val:'0.8',   unit:'mg/L',  pct:80,  safe:'0.5–1.0',   clr:'#22c55e' },
+  ];
+  document.getElementById('quality-params').innerHTML = params.map(p => `
+    <div class="quality-param">
+      <div class="qp-icon" style="background:${p.clr}22;color:${p.clr}">${p.icon}</div>
+      <div class="qp-body">
+        <div class="qp-name">${p.name}</div>
+        <div class="qp-bar"><div class="qp-fill" style="width:0%;background:${p.clr}" data-target="${p.pct}"></div></div>
+        <div style="font-size:11px;color:var(--clr-text-dim);margin-top:3px">Safe range: ${p.safe}</div>
+      </div>
+      <div class="qp-val" style="color:${p.clr}">${p.val} <span style="font-size:10px;font-weight:400">${p.unit}</span></div>
+    </div>`).join('');
+
+  setTimeout(() => {
+    document.querySelectorAll('.qp-fill[data-target]').forEach(el => {
+      el.style.width = el.dataset.target + '%';
+    });
+  }, 400);
+
+  // ── Zone Table ─────────────────────────────────────────────────────────
+  const scoreColor = s => s >= 80 ? '#22c55e' : s >= 60 ? '#f59e0b' : '#ef4444';
+  const statusCls  = s => s === 'good' ? 'badge-good' : s === 'moderate' ? 'badge-warn' : 'badge-danger';
+  document.getElementById('zone-table-body').innerHTML = QUALITY_ZONES.map(z => `
+    <tr>
+      <td><strong>${z.name}</strong></td>
+      <td>${z.ph}</td>
+      <td>${z.turbidity}</td>
+      <td>${z.chlorine}</td>
+      <td>${z.tds}</td>
+      <td><strong style="color:${scoreColor(z.score)}">${z.score}</strong></td>
+      <td><span class="badge ${statusCls(z.status)}">${z.status.charAt(0).toUpperCase()+z.status.slice(1)}</span></td>
+    </tr>`).join('');
+
+  // ── Zone Score Cards ───────────────────────────────────────────────────
+  document.getElementById('zone-score-cards').innerHTML = QUALITY_ZONES.map(z => `
+    <div class="zone-quality-card">
+      <div class="zone-score-big" style="color:${scoreColor(z.score)}">${z.score}</div>
+      <div style="font-size:11px;font-weight:600;color:var(--clr-text-md)">${z.name.replace('Zone ','').replace(' –',' –')}</div>
+      <span class="badge ${statusCls(z.status)}" style="margin-top:6px;display:inline-flex">${z.status}</span>
+    </div>`).join('');
+
+  // ── Tabs (range switch) ────────────────────────────────────────────────
+  document.querySelectorAll('.tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      showToast(`Showing data for ${tab.dataset.range}`, 'info');
+    });
+  });
+});
+</script>
+</body>
+</html>
