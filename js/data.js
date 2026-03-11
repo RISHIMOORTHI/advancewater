@@ -1,6 +1,7 @@
 /**
  * AQUA - Community Water Resource System
  * Core Data & Application State
+ * Location: Ramanathapuram (Ramnad), Tamil Nadu, India
  */
 
 // ─── Mock Reports Data ─────────────────────────────────────────────────────
@@ -8,15 +9,15 @@ const REPORTS = [
   {
     id: 'RPT-2024-001',
     type: 'leakage',
-    title: 'Major Pipe Burst on Main Street',
-    location: 'Main Street, Ward 4',
-    lat: 20.5937, lng: 78.9629,
+    title: 'Major Pipe Burst near Mundy Bazaar',
+    location: 'Mundy Bazaar Road, Ward 7',
+    lat: 9.3710, lng: 78.8430,
     status: 'critical',
     priority: 'high',
-    reportedBy: 'Anil Kumar',
+    reportedBy: 'Murugesan R.',
     date: '2026-03-10',
     time: '07:42 AM',
-    description: 'Underground pipe burst causing road flooding. Estimated 500 litres/hour wastage.',
+    description: 'Underground pipe burst causing road flooding near Mundy Bazaar. Estimated 500 litres/hour wastage. Several shops affected.',
     images: [],
     votes: 47,
     comments: 12,
@@ -26,15 +27,15 @@ const REPORTS = [
   {
     id: 'RPT-2024-002',
     type: 'quality',
-    title: 'Discoloured Water in Housing Block C',
-    location: 'Green Park Colony, Block C',
-    lat: 20.6037, lng: 78.9729,
+    title: 'Discoloured Water in Collector Nagar',
+    location: 'Collector Nagar, Block C',
+    lat: 9.3780, lng: 78.8480,
     status: 'investigating',
     priority: 'high',
-    reportedBy: 'Priya Sharma',
+    reportedBy: 'Selvi K.',
     date: '2026-03-09',
     time: '02:15 PM',
-    description: 'Water coming from taps has brownish tint and foul smell. Multiple residents affected.',
+    description: 'Water coming from taps has brownish tint and foul smell. Multiple residents affected in Collector Nagar.',
     images: [],
     votes: 89,
     comments: 24,
@@ -44,15 +45,15 @@ const REPORTS = [
   {
     id: 'RPT-2024-003',
     type: 'shortage',
-    title: 'No Water Supply for 48 Hours',
-    location: 'Sector 12, Residential Area',
-    lat: 20.5737, lng: 78.9529,
+    title: 'No Water Supply for 48 Hours – Sathangudi',
+    location: 'Sathangudi Layout, Ramanathapuram',
+    lat: 9.3590, lng: 78.8360,
     status: 'resolved',
     priority: 'medium',
-    reportedBy: 'Ravi Mishra',
+    reportedBy: 'Rajan P.',
     date: '2026-03-07',
     time: '09:00 AM',
-    description: 'Complete water supply disruption for the past 2 days. Tanker requested.',
+    description: 'Complete water supply disruption for the past 2 days. Tanker requested from TWAD Board.',
     images: [],
     votes: 132,
     comments: 31,
@@ -62,15 +63,15 @@ const REPORTS = [
   {
     id: 'RPT-2024-004',
     type: 'leakage',
-    title: 'Tap Leakage at Public Fountain',
-    location: 'Central Park, Fountain Area',
-    lat: 20.6137, lng: 78.9829,
+    title: 'Tap Leakage at Town Hall Water Point',
+    location: 'Town Hall Road, Ramanathapuram',
+    lat: 9.3660, lng: 78.8520,
     status: 'pending',
     priority: 'low',
-    reportedBy: 'Meera Patel',
+    reportedBy: 'Meenakshi A.',
     date: '2026-03-11',
     time: '11:30 AM',
-    description: 'Public fountain tap left open, continuous wastage observed for 3 days.',
+    description: 'Public water point tap left open near Town Hall, continuous wastage observed for 3 days.',
     images: [],
     votes: 15,
     comments: 3,
@@ -80,15 +81,15 @@ const REPORTS = [
   {
     id: 'RPT-2024-005',
     type: 'quality',
-    title: 'High Chlorine Smell in Tap Water',
-    location: 'New Town, Apartment Complex',
-    lat: 20.5837, lng: 78.9429,
+    title: 'High Chlorine Smell – Keelakarai Road Area',
+    location: 'Keelakarai Road Apartments',
+    lat: 9.3620, lng: 78.8350,
     status: 'investigating',
     priority: 'medium',
-    reportedBy: 'Suresh Nair',
+    reportedBy: 'Suresh N.',
     date: '2026-03-10',
     time: '06:00 PM',
-    description: 'Very strong chlorine taste and smell, not suitable for drinking.',
+    description: 'Very strong chlorine taste and smell in tap water, not suitable for drinking. Reported by several households on Keelakarai Road.',
     images: [],
     votes: 56,
     comments: 18,
@@ -98,15 +99,15 @@ const REPORTS = [
   {
     id: 'RPT-2024-006',
     type: 'infrastructure',
-    title: 'Damaged Water Meter at Building 7',
-    location: 'Industrial Zone, Building 7',
-    lat: 20.6237, lng: 78.9929,
+    title: 'Damaged Water Meter – Mandapam Camp',
+    location: 'Mandapam Camp Colony, Building 7',
+    lat: 9.3760, lng: 78.8560,
     status: 'pending',
     priority: 'low',
-    reportedBy: 'Deepa Rao',
+    reportedBy: 'Deepa R.',
     date: '2026-03-08',
     time: '03:20 PM',
-    description: 'Water meter showing incorrect readings, suspected fault in mechanism.',
+    description: 'Water meter showing incorrect readings, suspected fault in mechanism. Needs TWAD Board inspection.',
     images: [],
     votes: 8,
     comments: 2,
@@ -117,11 +118,11 @@ const REPORTS = [
 
 // ─── Water Quality Zones ───────────────────────────────────────────────────
 const QUALITY_ZONES = [
-  { id: 'Z1', name: 'Zone A - North', ph: 7.2, turbidity: 0.8, chlorine: 0.5, tds: 320, score: 92, status: 'good' },
-  { id: 'Z2', name: 'Zone B - South', ph: 7.8, turbidity: 2.1, chlorine: 0.9, tds: 480, score: 71, status: 'moderate' },
-  { id: 'Z3', name: 'Zone C - East',  ph: 6.9, turbidity: 4.5, chlorine: 1.2, tds: 610, score: 54, status: 'poor' },
-  { id: 'Z4', name: 'Zone D - West',  ph: 7.1, turbidity: 0.5, chlorine: 0.4, tds: 290, score: 96, status: 'good' },
-  { id: 'Z5', name: 'Zone E - Centre',ph: 7.4, turbidity: 1.3, chlorine: 0.6, tds: 350, score: 85, status: 'good' },
+  { id: 'Z1', name: 'Zone A – Ramanathapuram Town', ph: 7.2, turbidity: 0.8, chlorine: 0.5, tds: 320, score: 92, status: 'good' },
+  { id: 'Z2', name: 'Zone B – Mandapam',            ph: 7.8, turbidity: 2.1, chlorine: 0.9, tds: 480, score: 71, status: 'moderate' },
+  { id: 'Z3', name: 'Zone C – Rameswaram',          ph: 6.9, turbidity: 4.5, chlorine: 1.2, tds: 610, score: 54, status: 'poor' },
+  { id: 'Z4', name: 'Zone D – Paramakudi',          ph: 7.1, turbidity: 0.5, chlorine: 0.4, tds: 290, score: 96, status: 'good' },
+  { id: 'Z5', name: 'Zone E – Keelakarai',          ph: 7.4, turbidity: 1.3, chlorine: 0.6, tds: 350, score: 85, status: 'good' },
 ];
 
 // ─── Usage Data (last 7 days) ──────────────────────────────────────────────
@@ -143,9 +144,9 @@ const MONTHLY_STATS = {
 
 // ─── Active Alerts ─────────────────────────────────────────────────────────
 const ALERTS = [
-  { type: 'danger', icon: '🚨', msg: 'Pipe burst at Main Street affecting 1,200 residents. Repair crew dispatched.', time: '12 min ago' },
-  { type: 'warn',   icon: '⚠️', msg: 'Water quality alert in Zone C. High turbidity detected (4.5 NTU). Boil water advisory active.', time: '1 hr ago' },
-  { type: 'good',   icon: '✅', msg: 'Water supply restored in Sector 12. Issue resolved ahead of schedule.', time: '3 hrs ago' },
+  { type: 'danger', icon: '🚨', msg: 'Pipe burst at Mundy Bazaar Road affecting 1,200 residents of Ramanathapuram. TWAD repair crew dispatched.', time: '12 min ago' },
+  { type: 'warn',   icon: '⚠️', msg: 'Water quality alert in Rameswaram Zone. High turbidity detected (4.5 NTU). Boil water advisory active.', time: '1 hr ago' },
+  { type: 'good',   icon: '✅', msg: 'Water supply restored in Sathangudi Layout. Issue resolved ahead of schedule.', time: '3 hrs ago' },
 ];
 
 // ─── Stats Summary ─────────────────────────────────────────────────────────

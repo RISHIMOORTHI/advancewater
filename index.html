@@ -69,9 +69,9 @@
 
     <div class="sidebar-footer">
       <div class="sidebar-profile">
-        <div class="profile-avatar">AK</div>
+        <div class="profile-avatar">MR</div>
         <div class="profile-info">
-          <div class="profile-name">Anil Kumar</div>
+          <div class="profile-name">Murugesan R.</div>
           <div class="profile-role">Community Admin</div>
         </div>
         <span style="font-size:16px;color:var(--clr-text-dim)">⋮</span>
@@ -206,8 +206,8 @@
           <div class="card">
             <div class="card-header">
               <div>
-                <div class="card-title">City Quality Index</div>
-                <div class="card-subtitle">Overall water quality score</div>
+                <div class="card-title">Ramnad Quality Index</div>
+                <div class="card-subtitle">Overall water quality score – Ramanathapuram</div>
               </div>
               <span class="badge badge-good">Good</span>
             </div>
@@ -232,7 +232,7 @@
                   <span class="ring-unit">/ 100</span>
                 </div>
               </div>
-              <div class="quality-label text-good">City average is <strong>Good</strong></div>
+              <div class="quality-label text-good">Ramanathapuram average is <strong>Good</strong></div>
             </div>
           </div>
 
@@ -386,11 +386,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Timeline ───────────────────────────────────────────
   const timelineEvents = [
-    { icon:'🚨', title:'Critical Alert – Main Street pipe burst', meta:'12 minutes ago', dot:'rgba(239,68,68,0.2)', dtxt:'#ef4444' },
-    { icon:'👷', title:'Crew dispatched to Main Street', meta:'20 minutes ago',           dot:'rgba(59,130,246,0.2)', dtxt:'#3b82f6' },
-    { icon:'🔬', title:'Zone C turbidity threshold exceeded', meta:'1 hour ago',           dot:'rgba(245,158,11,0.2)', dtxt:'#f59e0b' },
-    { icon:'✅', title:'Sector 12 water supply restored', meta:'3 hours ago',              dot:'rgba(34,197,94,0.2)',  dtxt:'#22c55e' },
-    { icon:'📝', title:'New report: Discoloured water Block C', meta:'5 hours ago',        dot:'rgba(0,200,255,0.2)', dtxt:'#00c8ff' },
+    { icon:'🚨', title:'Critical Alert – Mundy Bazaar pipe burst', meta:'12 minutes ago', dot:'rgba(239,68,68,0.2)', dtxt:'#ef4444' },
+    { icon:'👷', title:'TWAD crew dispatched to Mundy Bazaar', meta:'20 minutes ago',      dot:'rgba(59,130,246,0.2)', dtxt:'#3b82f6' },
+    { icon:'🔬', title:'Rameswaram Zone turbidity threshold exceeded', meta:'1 hour ago',   dot:'rgba(245,158,11,0.2)', dtxt:'#f59e0b' },
+    { icon:'✅', title:'Sathangudi Layout water supply restored', meta:'3 hours ago',       dot:'rgba(34,197,94,0.2)',  dtxt:'#22c55e' },
+    { icon:'📝', title:'New report: Discoloured water at Collector Nagar', meta:'5 hours ago', dot:'rgba(0,200,255,0.2)', dtxt:'#00c8ff' },
     { icon:'📡', title:'Sensor network maintenance completed', meta:'Yesterday',            dot:'rgba(139,92,246,0.2)','dtxt':'#8b5cf6' },
   ];
   document.getElementById('timeline-list').innerHTML = timelineEvents.map(e => `
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`).join('');
 
   // ── Mini Map ───────────────────────────────────────────
-  const map = L.map('leaflet-map', { zoomControl: false, attributionControl: false }).setView([20.5937, 78.9629], 12);
+  const map = L.map('leaflet-map', { zoomControl: false, attributionControl: false }).setView([9.3639, 78.8395], 12);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 

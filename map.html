@@ -136,9 +136,9 @@
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-profile">
-        <div class="profile-avatar">AK</div>
+        <div class="profile-avatar">MR</div>
         <div class="profile-info">
-          <div class="profile-name">Anil Kumar</div>
+          <div class="profile-name">Murugesan R.</div>
           <div class="profile-role">Community Admin</div>
         </div>
       </div>
@@ -234,7 +234,7 @@ const markerRefs = {};
 document.addEventListener('DOMContentLoaded', () => {
   // Init Map
   map = L.map('map-panel', {
-    center: [20.5937, 78.9629],
+    center: [9.3639, 78.8395],
     zoom: 13,
     zoomControl: false,
   });
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
   QUALITY_ZONES.forEach((z, i) => {
     const offsets = [[0.02,0.02],[0,-0.03],[-0.02,0.03],[0.03,-0.02],[-0.01,-0.01]];
     const [dlat, dlng] = offsets[i] || [0,0];
-    L.circle([20.5937+dlat, 78.9629+dlng], {
+    L.circle([9.3639+dlat, 78.8395+dlng], {
       radius: 800,
       color: zoneColors[z.status],
       fillColor: zoneColors[z.status],
@@ -270,8 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sensors Layer
   sensorsLayer = L.layerGroup();
   const sensorPositions = [
-    [20.600, 78.960], [20.585, 78.975], [20.610, 78.990],
-    [20.575, 78.950], [20.620, 78.965]
+    [9.371, 78.843], [9.358, 78.850], [9.378, 78.862],
+    [9.360, 78.832], [9.382, 78.838]
   ];
   sensorPositions.forEach((pos, i) => {
     const icon = L.divIcon({
